@@ -1,7 +1,7 @@
+import appLogo from '/logo-sm.png'
 import styles from './App.module.scss'
 import GithubStarsButton from './components/GithubStarsButton'
 import { cn } from './utils'
-import appLogo from '/logo-sm.png'
 
 function App() {
   return (

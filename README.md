@@ -10,10 +10,13 @@ update the corresponding CSS giving you instant feedback.
 
 ## Tech Stack
 
-- CSS Grid Layouts
-- [Vite + React.js + SWC](https://github.com/vitejs/vite-plugin-react-swc)
 - Bun as a JS runtime, bundler and package manager
+- [Vite + React.js + SWC](https://github.com/vitejs/vite-plugin-react-swc)
+- CSS Grid Layouts
 - SCSS Modules
+- OpenProps for CSS variables
+- Zustand for state management
+- URL hash to persist state
 - Github Actions as CI/CD
 - Github Pages for deployments
 
