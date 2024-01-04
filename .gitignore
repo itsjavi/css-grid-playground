@@ -1,18 +1,27 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+# Logs
+logs
+*.log
+*.log*
 
-# dependencies
-/node_modules
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
+# Dependencies and artifacts
+node_modules
+build
+coverage
+dist
+dist-ssr
 .env
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*.local
 
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Other
+*-legacy

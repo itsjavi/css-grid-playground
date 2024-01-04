@@ -1,13 +1,42 @@
 {
   "name": "css-grid-playground",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "format": "sort-package-json && bun lint:fix",
+    "lint": "biome lint . --max-diagnostics 50 .",
+    "lint:fix": "biome check --max-diagnostics 50 --apply .",
+    "precommit": "CI=true bun test && CI=true bun lint",
+    "preview": "vite preview",
+    "start": "bun run preview",
+    "test": "bun test --env=jsdom",
+    "test:cover": "bun test -- --coverage && open coverage/lcov-report/index.html"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.4.1",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "sort-package-json": "^2.6.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  },
+  "dependencies-legacy": {
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "styled-components": "^2.0.0"
   },
-  "devDependencies": {
+  "devDependencies-legacy": {
     "@kadira/storybook": "^2.35.3",
     "babel-eslint": "^7.2.1",
     "eslint": "^3.18.0",
@@ -19,21 +48,5 @@
     "react-scripts": "0.9.5",
     "react-test-renderer": "^15.4.2",
     "serve": "^5.0.1"
-  },
-  "scripts": {
-    "now-start": "cd build && serve -s ./",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "deploy": "cd build && now --static --name css-grid-playground",
-    "test": "react-scripts test --env=jsdom",
-    "test:cover": "yarn test -- --coverage && open coverage/lcov-report/index.html",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public",
-    "precommit": "CI=true yarn test"
-  },
-  "jest": {
-    "testEnvironment": "node"
-  },
-  "alias": "www.cssgridplayground.com"
+  }
 }

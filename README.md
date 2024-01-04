@@ -1,16 +1,31 @@
-# CSS Grid Playground [![Build Status](https://travis-ci.org/purplecones/css-grid-playground.svg?branch=master)](https://travis-ci.org/purplecones/css-grid-playground)
+# CSS Grid Playground! 2024 [![Build Status](https://travis-ci.org/purplecones/css-grid-playground.svg?branch=master)](https://travis-ci.org/purplecones/css-grid-playground)
 
-CSS Grid Playground lets you visually play with _Grid Container_ and _Grid Item_ elements in the browser to quickly sketch up a layout for your site. The layout changes instantly as you update the corresponding CSS giving you instant feedback.
+CSS Grid Playground! lets you visually play with the [CSS Grid Layout](https://www.w3.org/TR/css3-grid-layout/) elements in the browser to quickly sketch up a layout for your site.
+
+The layout, which provides a basic way of editing a container and its direct children, renders changes instantly as you update the corresponding CSS giving you instant feedback.
 
 ![Demo](demo.gif)
 
-## Background
-[CSS Grid Layout](https://www.w3.org/TR/css3-grid-layout/) is fast becoming the best way to design modern website layouts. I knew I wanted to learn more about this new framework and it just so happened that General Assembly was hosting a [workshop](https://generalassemb.ly/education/how-css-grid-is-reinventing-webpage-design) with [@jensimmons](https://twitter.com/jensimmons) in NYC. The workshop was awesome and very informative.
-
-It inspired me to create this tool that allows you to directly play with the new `grid` properties on the Grid Container or the Grid Items and see how they alter the grid structure. It helps me to learn CSS Grid better by being visual and responsive to CSS changes.
-
-## Technologies Used
+## Tech Stack
 - CSS Grid Layouts
-- create-react-app
-- styled-components
-- zeit.co/now
+- [Vite + React.js + SWC](https://github.com/vitejs/vite-plugin-react-swc)
+- Bun as a JS runtime, bundler and package manager
+- SCSS Modules
+- Github Actions as CI/CD
+- Github Pages for deployments
+
+
+## Getting Started
+
+First, you will need [Bun](https://bun.sh/) 1.0.20 or higher installed on your machine.
+Then, you can run the following commands after cloning this repository, to get started:
+
+```bash
+bun install
+bun run dev
+```
+
+
+## Background
+
+Inspired in "CSS Grid Playground", the original work from [@purplecones](https://github.com/purplecones/css-grid-playground), this project aims to provide better maintainability with a more modern codebase, and also a richer user experience while keeping its simplicity.
