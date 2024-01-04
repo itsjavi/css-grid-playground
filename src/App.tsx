@@ -1,20 +1,19 @@
-import appLogo from '/logo.svg'
-import './App.css'
+import styles from './App.module.scss'
 import GithubStarsButton from './components/GithubStarsButton'
+import { cn } from './utils'
+import appLogo from '/logo-sm.png'
 
 function App() {
   return (
-    <>
-      <div>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={appLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>CSS Grid Playground! 2024</h1>
+    <div className={cn(styles.app)}>
+      <a href="https://react.dev" target="_blank" rel="noreferrer">
+        <img src={appLogo} className="logo" alt="App logo" width={128} height={128} />
+      </a>
+      <h1>CSS Grid Playground!</h1>
       <div className="card">
         <GithubStarsButton />
       </div>
-    </>
+    </div>
   )
 }
 

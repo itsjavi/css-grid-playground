@@ -12,7 +12,7 @@ export default function GithubStarsButton({ projectName = 'itsjavi/css-grid-play
         target="_blank"
         rel="noreferrer"
       >
-        <img src={githubIcon} className="logo github" alt="Github logo" /> Github
+        <img src={githubIcon} alt="Github logo" /> Github
       </a>
     </>
   )
