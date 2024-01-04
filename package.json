@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
+    "build:production": "vite build --base=/css-grid-playground/ && rm -rf _site && mkdir -p _site && mv ./dist/* ./_site",
     "dev": "vite",
     "format": "sort-package-json && bun lint:fix",
     "lint": "biome lint . --max-diagnostics 50 .",

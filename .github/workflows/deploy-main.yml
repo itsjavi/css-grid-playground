@@ -42,11 +42,7 @@ jobs:
             exit 1
           fi
 
-          bun run build
-          ls -la ./dist
-          echo "Moving './dist' to './_site'"
-          rm -rf _site && mkdir -p _site
-          mv ./dist/* ./_site
+          bun run build:production
           ls -la ./_site
 
       - name: Upload artifact
