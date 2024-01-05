@@ -19,6 +19,7 @@
     "preview": "vite preview",
     "start": "bun run preview",
     "test": "bun test --env=jsdom",
+    "make:component": "bun src/scripts/make-component.ts",
     "test:cover": "bun test -- --coverage && open coverage/lcov-report/index.html"
   },
   "jest": {
