@@ -23,7 +23,7 @@ export default function GridContainer({ className, css, items, ...props }: GridC
   })
 
   return (
-    <AsStyled css={safelyJoinCss(css)} className={cn('grid', className)} {...props}>
+    <AsStyled css={safelyJoinCss(css)} className={cn(className)} {...props}>
       {children}
     </AsStyled>
   )
