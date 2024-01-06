@@ -102,7 +102,8 @@ export const gridPresets: GridPreset[] = [
   },
   {
     name: 'RAM Technique',
-    description: 'RAM Technique: Repeat, Auto, Minmax.',
+    description: `RAM Technique: Repeat, Auto, Minmax. We also use 'aspect-ratio' to 
+    keep the items proportions consistent in any screen size.`,
     createState: () => ({
       wrapperStyles: `display: block;
       `,
@@ -124,7 +125,7 @@ export const gridPresets: GridPreset[] = [
   },
   {
     name: 'Pokémon Boxes',
-    description: 'This demo combines the RAM Technique with nested grids of 6x5 elements.',
+    description: 'This demo combines the RAM Technique with nested grids of proportional 6x5 elements.',
     createState: () => ({
       wrapperStyles: `display: grid;
       grid-template-columns: repeat(auto-fill,minmax(330px,1fr));
