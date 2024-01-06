@@ -13,7 +13,6 @@
   padding: 0.5rem;
   background: var(--color-panel-hard);
   border: 1px solid var(--color-border);
-  // border-bottom: none;
 }
 
 .titleWithButtons {
@@ -57,7 +56,6 @@
 
   button:hover {
     background: var(--stone-4);
-    // border: 1px solid var(--stone-10);
 
     img {
       opacity: 0.9;
@@ -66,7 +64,6 @@
 
   button:active {
     background: var(--stone-5);
-    // border: 1px solid var(--stone-12);
   }
 }
 

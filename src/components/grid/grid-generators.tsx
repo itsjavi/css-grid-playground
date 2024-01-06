@@ -7,17 +7,12 @@ export function generateGridsVirtualDom(state: PlaygroundState): GridContainerVi
 
   for (const i in state.grids) {
     const grid = state.grids[i]
-    // const generatedClass = `grid${i}`
 
     elements.push({
-      // className: generatedClass,
       className: 'grid',
       style: safelyJoinCss(state.gridStyles, grid.styles),
       children: grid.items.map((item, index) => {
-        // const generatedItemClass = `${generatedClass}-item${index}`
-
         return {
-          // className: generatedItemClass,
           className: 'grid-item',
           style: safelyJoinCss(state.gridItemStyles, item.styles),
           innerText: String(index + 1),

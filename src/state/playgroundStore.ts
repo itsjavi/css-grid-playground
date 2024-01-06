@@ -155,21 +155,12 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
   setTitle: (title) => set({ title, lastModified: generateLastModified() }),
   setWrapperStyles: (wrapperStyles) => set({ wrapperStyles: wrapperStyles, lastModified: generateLastModified() }),
   setGridContainerTemplate: (gridStyles) => {
-    // change styles for all containers and set gridContainerTemplate
     const grids = get().grids.map((grid) => ({ ...grid, styles: gridStyles }))
     set({ grids, gridStyles: gridStyles, lastModified: generateLastModified() })
-    // set({ gridContainerTemplate: gridStyles })
   },
   setGridItemTemplate: (gridItemStyles) => {
-    // change styles for all items and set gridItemTemplate
-    // const grids = get().grids.map((grid) => ({
-    //   ...grid,
-    //   items: grid.items.map((item) => ({ ...item, styles: gridItemStyles })),
-    // }))
-    // set({ grids, gridItemTemplate: gridItemStyles })
     set({ gridItemStyles: gridItemStyles, lastModified: generateLastModified() })
   },
-  //
   addGridContainer: (container) => {
     const currentGrids = get().grids
     const lastGridCopy =
@@ -198,7 +189,6 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
 
     const lastItemCopy =
       grid.items.length > 0 ? JSON.parse(JSON.stringify(grid.items[grid.items.length - 1])) : undefined
-    console.log({ lastItemCopy })
     grids[containerIndex].items.push(
       item ??
         lastItemCopy ?? {

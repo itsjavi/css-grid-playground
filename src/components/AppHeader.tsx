@@ -25,7 +25,6 @@ export default function AppHeader({ className, ...props }: AppHeaderProps) {
           title="GitHub"
         >
           <img src={githubIcon} alt="" />
-          {/* <span className="sm-hidden">Github</span> */}
         </a>
       </div>
     </header>

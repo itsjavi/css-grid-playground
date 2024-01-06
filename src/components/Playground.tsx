@@ -14,7 +14,6 @@ type PlaygroundProps = {
 
 export default function Playground({ className, ...props }: PlaygroundProps) {
   const store = usePersistentStore()
-  console.log('store-rerender', store.grids)
   const gridElements = generateGrids(store)
   const [currentGrid, setCurrentGrid] = useState(0)
   const [showEditors, setShowEditors] = useState(true)
@@ -30,8 +29,6 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
   if (store.grids[currentGrid]?.items.length > 0) {
     gridItemButtons.push('remove')
   }
-
-  console.log('rendering playground')
 
   return (
     <div className={cn(styles.editor, className)} {...props}>
