@@ -1,12 +1,12 @@
-# CSS Grid Playground! [![Build Status](https://github.com/itsjavi/css-grid-playground/actions/workflows/quality.yml/badge.svg)](https://github.com/itsjavi/css-grid-playground/actions/workflows/quality.yml)
+# CSS Grid Playground [![Build Status](https://github.com/itsjavi/css-grid-playground/actions/workflows/quality.yml/badge.svg)](https://github.com/itsjavi/css-grid-playground/actions/workflows/quality.yml)
 
-CSS Grid Playground! lets you visually play with the [CSS Grid Layout](https://www.w3.org/TR/css3-grid-layout/) elements
-in the browser to quickly sketch up a layout for your site.
+**CSS Grid Playground** lets you visually play with the [CSS Grid Layout](https://www.w3.org/TR/css3-grid-layout/)
+elements in the browser to quickly sketch up a layout for your site.
 
 The layout, which provides a basic way of editing a container and its direct children, renders changes instantly as you
 update the corresponding CSS giving you instant feedback.
 
-![Demo](demo.gif)
+![Demo](public/demo.gif)
 
 ## Tech Stack
 
@@ -19,6 +19,8 @@ update the corresponding CSS giving you instant feedback.
 - URL hash to persist state
 - Github Actions as CI/CD
 - Github Pages for deployments
+
+SVG Icons are from lucide.dev
 
 ## Getting Started
 

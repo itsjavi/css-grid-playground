@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "build:production": "vite build --base=/css-grid-playground/ && rm -rf _site && mkdir -p _site && mv ./dist/* ./_site",
-    "dev": "PORT=4000 vite",
+    "dev": "vite --port=4000 --host",
     "format": "bun lint:fix",
     "lint": "bun lint-prettier && bun lint-biome",
     "lint-biome": "biome lint . --max-diagnostics 50",
@@ -15,12 +15,12 @@
     "lint:fix-biome": "biome check --max-diagnostics 50 --apply .",
     "lint:fix-package-json": "sort-package-json",
     "lint:fix-prettier": "prettier --write \"src/**/*.{md,json,css,scss}\"",
+    "make:component": "bun src/dev/make-component.ts",
     "precommit": "CI=true bun test && CI=true bun lint",
     "preview": "vite preview",
-    "start": "bun run preview",
+    "start": "vite preview",
     "test": "bun test --env=jsdom",
-    "make:component": "bun src/scripts/make-component.ts",
-    "test:cover": "bun test -- --coverage && open coverage/lcov-report/index.html"
+    "test:coverage": "bun test --coverage && open coverage/index.html"
   },
   "jest": {
     "testEnvironment": "node"
@@ -48,6 +48,7 @@
     "sort-package-json": "^2.6.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
+    "vite-plugin-svgr": "^4.2.0",
     "zustand": "^4.4.7"
   },
   "dependencies-legacy": {

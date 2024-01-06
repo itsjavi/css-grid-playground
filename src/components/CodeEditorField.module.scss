@@ -1,0 +1,22 @@
+.editor {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.input {
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 0.5em;
+  outline: none;
+  resize: none;
+  height: 100%;
+  width: 100%;
+  min-height: 185px;
+
+  &:focus {
+    background: var(--stone-1);
+    border-color: var(--color-border-hard);
+    box-shadow: var(--shadow-1);
+  }
+}

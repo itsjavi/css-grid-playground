@@ -1,0 +1,76 @@
+.controller {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.toolbar {
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--color-panel-hard);
+  border: 1px solid var(--color-border);
+  // border-bottom: none;
+}
+
+.titleWithButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.toolbar .title {
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+
+  button {
+    padding: 0;
+    line-height: 0.2;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    width: 1.625rem;
+    height: 1.625rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-color: transparent;
+  }
+
+  button img {
+    width: 1rem;
+    height: 1rem;
+    opacity: 0.7;
+  }
+
+  button:hover {
+    background: var(--stone-4);
+    // border: 1px solid var(--stone-10);
+
+    img {
+      opacity: 0.9;
+    }
+  }
+
+  button:active {
+    background: var(--stone-5);
+    // border: 1px solid var(--stone-12);
+  }
+}
+
+.code textarea {
+  min-height: 185px;
+  border-top: none;
+}

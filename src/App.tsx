@@ -1,18 +1,29 @@
-import appLogo from '/logo-sm.png'
-import styles from './App.module.scss'
-import GithubStarsButton from './components/GithubStarsButton'
-import { cn } from './utils'
+import AppFooter from './components/AppFooter'
+import AppHeader from './components/AppHeader'
+import Playground from './components/Playground'
 
 function App() {
   return (
-    <div className={cn(styles.app)}>
-      <a href="https://react.dev" target="_blank" rel="noreferrer">
-        <img src={appLogo} className="logo" alt="App logo" width={128} height={128} />
-      </a>
-      <h1>CSS Grid Playground!</h1>
-      <div className="card">
-        <GithubStarsButton />
+    <div className="app">
+      <div>
+        <AppHeader />
+        <main>
+          <article>
+            Online playground for CSS Grids where you can add/remove elements, edit CSS properties, see the changes in
+            real time, and share the state via URL. It also comes with presets inspired by{' '}
+            <a href="https://web.dev/learn/css/grid" target="_blank" rel="noreferrer">
+              web.dev
+            </a>
+            's examples, and supports{' '}
+            <a href="https://open-props.style/#colors" target="_blank" rel="noreferrer">
+              Open Props
+            </a>{' '}
+            variables.
+          </article>
+        </main>
+        <Playground />
       </div>
+      <AppFooter />
     </div>
   )
 }

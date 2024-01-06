@@ -29,8 +29,6 @@ html {
 
   color: #213547;
   background: #ffffff;
-  color-scheme: light dark;
-
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -54,12 +52,13 @@ body {
 
 a {
   font-weight: 500;
-  color: hsl(220, 86%, 70%);
+  color: var(--indigo-10);
   text-decoration: underline;
+  text-decoration: underline dotted;
 }
 
 a:hover {
-  color: hsl(220, 86%, 62%);
+  color: var(--indigo-7);
 }
 
 h1,
@@ -100,14 +99,13 @@ h6 {
   font-size: 1rem;
 }
 
-
 input,
 textarea,
 select,
 button {
   font-family: inherit;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.2;
   font-weight: 400;
 }
 
@@ -133,8 +131,15 @@ img {
   height: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
+dialog {
+  display: none;
+}
 
+dialog[open] {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after,
@@ -147,7 +152,6 @@ img {
 }
 
 @media (prefers-reduced-transparency: reduce) {
-
   *,
   *::before,
   *::after {
