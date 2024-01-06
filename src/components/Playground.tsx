@@ -155,7 +155,7 @@ function GridControllers() {
   }
 
   return (
-    <div className={styles.topControllers}>
+    <div className={styles.gridControllers}>
       <GridController
         title="Wrapper Styles"
         code={store.wrapperStyles}
@@ -225,11 +225,19 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
 
   return (
     <div className={cn(styles.editor, className)} {...props}>
-      <GeneralActionsPanel editorsVisible={showEditors} setEditorsVisible={setShowEditors} />
-      {showEditors && <GridControllers />}
-      <div className={styles.panel}>Result:</div>
-      <div className={styles.output}>
-        <AsStyled css={store.wrapperStyles}>{gridElements}</AsStyled>
+      <div
+        className={cn(styles.editorBody, {
+          [styles.editorBodyWithoutEditors]: !showEditors,
+        })}
+      >
+        <div className={styles.result}>
+          <div>Result:</div>
+          <div className={styles.resultBody}>
+            <AsStyled css={store.wrapperStyles}>{gridElements}</AsStyled>
+          </div>
+        </div>
+        <GeneralActionsPanel editorsVisible={showEditors} setEditorsVisible={setShowEditors} />
+        {showEditors && <GridControllers />}
       </div>
     </div>
   )
