@@ -1,4 +1,5 @@
 import codeIcon from '@/assets/code-2.svg'
+import copyIcon from '@/assets/copy.svg'
 import { usePersistentStore } from '@/state/playgroundStore'
 import { cn } from '@/utils'
 import { ComponentPropsWithoutRef, useRef, useState } from 'react'
@@ -20,6 +21,7 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
   const gridContainerButtons: GridControllerAction[] = ['add', 'reset', 'collapse']
   const gridItemButtons: GridControllerAction[] = ['reset', 'collapse']
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const codePreviewRef = useRef<HTMLPreElement>(null)
 
   if (store.grids.length > 0) {
     gridContainerButtons.push('remove')
@@ -35,9 +37,38 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
     <div className={cn(styles.editor, className)} {...props}>
       <dialog className={cn(styles.code)} ref={dialogRef}>
         <form method="dialog">
+          <button
+            type="button"
+            title="Copy code"
+            onClick={() => {
+              if (!codePreviewRef.current) {
+                return
+              }
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(codePreviewRef.current.innerText)
+              }
+              const selection = window.getSelection()
+              if (!selection) {
+                return
+              }
+              selection.selectAllChildren(codePreviewRef.current)
+            }}
+          >
+            <img src={copyIcon} alt="Copy" />
+          </button>
           <button type="submit">Close</button>
         </form>
-        <pre className="source-code">
+        <pre
+          className="source-code"
+          ref={codePreviewRef}
+          onClick={(e) => {
+            const selection = window.getSelection()
+            if (!selection) {
+              return
+            }
+            selection.selectAllChildren(e.currentTarget)
+          }}
+        >
           <code>{generateGridsHtmlCode(store)}</code>
         </pre>
       </dialog>
