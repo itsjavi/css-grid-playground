@@ -1,4 +1,4 @@
-import { GridItemVirtualDom } from '@/state/playgroundStore'
+import { GridItemVirtualDom } from '@/state/types'
 import { cn, safelyJoinCss } from '@/utils'
 import { ComponentPropsWithoutRef } from 'react'
 import AsStyled from '../AsStyled'

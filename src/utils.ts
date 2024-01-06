@@ -59,3 +59,28 @@ export function safelyJoinCss(...args: (string | null | undefined)[]): string {
     .filter(Boolean)
     .join('; ')
 }
+
+export function indentLines(str: string, indent = 2): string {
+  const lines = str.split('\n')
+
+  return (
+    ' '.repeat(indent) +
+    lines
+      .map((line) => ' '.repeat(indent) + line.trimStart())
+      .join('\n')
+      .trim()
+  )
+}
+
+export function unindentLines(str: string): string {
+  const lines = str.split('\n')
+
+  return lines
+    .map((line) => line.trimStart())
+    .join('\n')
+    .trimStart()
+}
+
+export function deepClone<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value))
+}

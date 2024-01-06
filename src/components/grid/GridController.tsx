@@ -1,10 +1,10 @@
 import collapseIcon from '@/assets/chevrons-down-up.svg'
 import expandIcon from '@/assets/chevrons-up-down.svg'
 import addIcon from '@/assets/copy-plus.svg'
-import resetIcon from '@/assets/list-restart.svg'
+import resetIcon from '@/assets/history.svg'
 import removeIcon from '@/assets/trash-2.svg'
-import { PlaygroundState } from '@/state/playgroundStore'
-import { cn } from '@/utils'
+import { PlaygroundState } from '@/state/types'
+import { cn, unindentLines } from '@/utils'
 import { ComponentPropsWithoutRef, useRef, useState } from 'react'
 import CodeEditorField from '../CodeEditorField'
 import styles from './GridController.module.scss'
@@ -38,7 +38,7 @@ export type GridControllerAction = 'add' | 'remove' | 'reset' | 'collapse'
 type GridControllerProps = {
   title?: string
   name?: keyof PlaygroundState
-  initialCode?: string
+  code?: string
   buttons?: Array<GridControllerAction>
   onCodeChange?: (ctx: GridControllerContext) => void
   onAddClick?: (ctx: GridControllerContext) => void
@@ -51,7 +51,7 @@ export default function GridController({
   className,
   title,
   name,
-  initialCode,
+  code,
   buttons = ['collapse'],
   numElements,
   elementIndex,
@@ -63,7 +63,8 @@ export default function GridController({
   onResetClick,
   ...props
 }: GridControllerProps) {
-  const code = useRef(initialCode)
+  const cleanCode = unindentLines(code ?? '')
+  const codeRef = useRef(cleanCode)
   const [expanded, setExpanded] = useState(true)
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -74,13 +75,13 @@ export default function GridController({
         elementIndex,
       })
     }
-    code.current = e.target.value
+    codeRef.current = e.target.value
   }
 
   const getContext = () => {
     return {
       name: name,
-      code: code.current ?? '',
+      code: codeRef.current ?? '',
       elementIndex,
     }
   }
@@ -113,7 +114,7 @@ export default function GridController({
                 const index = Number(e.target.value)
                 onElementSelect?.({
                   name,
-                  code: code.current ?? '',
+                  code: codeRef.current ?? '',
                   elementIndex: index,
                 })
               }}
@@ -162,7 +163,7 @@ export default function GridController({
           )}
         </div>
       </div>
-      {expanded && <CodeEditorField name={name} value={initialCode} className={styles.code} onChange={handleChange} />}
+      {expanded && <CodeEditorField name={name} value={cleanCode} className={styles.code} onChange={handleChange} />}
     </div>
   )
 }

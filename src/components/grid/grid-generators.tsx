@@ -1,5 +1,5 @@
-import { GridContainerVirtualDom, PlaygroundState } from '@/state/playgroundStore'
-import { safelyJoinCss } from '@/utils'
+import { GridContainerVirtualDom, PlaygroundState } from '@/state/types'
+import { indentLines, safelyJoinCss } from '@/utils'
 import GridContainer from './GridContainer'
 
 export function generateGridsVirtualDom(state: PlaygroundState): GridContainerVirtualDom[] {
@@ -22,18 +22,6 @@ export function generateGridsVirtualDom(state: PlaygroundState): GridContainerVi
   }
 
   return elements
-}
-
-function indentLines(str: string, indent = 2): string {
-  const lines = str.split('\n')
-
-  return (
-    ' '.repeat(indent) +
-    lines
-      .map((line) => ' '.repeat(indent) + line.trimStart())
-      .join('\n')
-      .trim()
-  )
 }
 
 export function generateGridsHtmlCode(state: PlaygroundState): string {

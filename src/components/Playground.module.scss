@@ -21,10 +21,12 @@
 }
 
 .output {
+  position: relative;
 }
 
-.code {
-  position: absolute;
+.codeDialog {
+  position: fixed;
+  z-index: 99999;
   margin: 0 auto;
   inset: 1.4rem;
   background: var(--color-panel);
@@ -56,7 +58,7 @@
   }
 }
 
-.code::backdrop {
+.codeDialog::backdrop {
   background-image: linear-gradient(45deg, magenta, rebeccapurple, dodgerblue, green);
   opacity: 0.75;
 }
@@ -65,7 +67,7 @@
 .controlGroupNested {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
 }
