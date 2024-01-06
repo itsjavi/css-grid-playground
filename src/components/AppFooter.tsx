@@ -6,7 +6,7 @@ type AppFooterProps = {} & ComponentPropsWithoutRef<'div'>
 
 export default function AppFooter({ className, ...props }: AppFooterProps) {
   return (
-    <footer className={cn(styles.footer, className)} {...props}>
+    <footer data-noselect className={cn(styles.footer, className)} {...props}>
       &copy; 2024 Javier Aguilar
     </footer>
   )

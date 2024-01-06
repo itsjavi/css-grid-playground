@@ -11,10 +11,10 @@ type AppHeaderProps = {
 export default function AppHeader({ className, ...props }: AppHeaderProps) {
   return (
     <header className={cn(styles.header, className)} {...props}>
-      <div className={styles.title}>
+      <a className={styles.title} href={import.meta.env.BASE_URL}>
         <img src={appLogo} alt="" />
         <h1>CSS Grid Playground</h1>
-      </div>
+      </a>
       <div className={styles.links}>
         <a
           className="github-button"

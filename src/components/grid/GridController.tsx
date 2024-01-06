@@ -40,6 +40,7 @@ type GridControllerProps = {
   name?: keyof PlaygroundState
   code?: string
   buttons?: Array<GridControllerAction>
+  disabledButtons?: Array<GridControllerAction>
   onCodeChange?: (ctx: GridControllerContext) => void
   onAddClick?: (ctx: GridControllerContext) => void
   onRemoveClick?: (ctx: GridControllerContext) => void
@@ -53,6 +54,7 @@ export default function GridController({
   name,
   code,
   buttons = ['collapse'],
+  disabledButtons = [],
   numElements,
   elementIndex,
   elementSelectTemplate,
@@ -95,6 +97,7 @@ export default function GridController({
           {buttons.includes('collapse') && (
             <div className={styles.actions}>
               <button
+                disabled={disabledButtons.includes('collapse')}
                 type="button"
                 title={expanded ? 'Collapse editor' : 'Expand editor'}
                 onClick={() => {
@@ -128,19 +131,9 @@ export default function GridController({
           )}
         </div>
         <div className={styles.actions}>
-          {buttons.includes('remove') && (
-            <button
-              type="button"
-              title="Remove last element"
-              onClick={() => {
-                onRemoveClick?.(getContext())
-              }}
-            >
-              <img src={removeIcon} alt="Add" aria-label="Add" />
-            </button>
-          )}
           {buttons.includes('add') && (
             <button
+              disabled={disabledButtons.includes('add')}
               type="button"
               title="Duplicate & add last element"
               onClick={() => {
@@ -150,8 +143,21 @@ export default function GridController({
               <img src={addIcon} alt="Add" aria-label="Add" />
             </button>
           )}
+          {buttons.includes('remove') && (
+            <button
+              disabled={disabledButtons.includes('remove')}
+              type="button"
+              title="Remove last element"
+              onClick={() => {
+                onRemoveClick?.(getContext())
+              }}
+            >
+              <img src={removeIcon} alt="Add" aria-label="Add" />
+            </button>
+          )}
           {buttons.includes('reset') && (
             <button
+              disabled={disabledButtons.includes('reset')}
               type="button"
               title="Reset styles"
               onClick={() => {

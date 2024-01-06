@@ -29,6 +29,12 @@ button {
   justify-content: center;
   gap: 0.5rem;
 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   img {
     width: 1rem;
     height: 1rem;
@@ -69,6 +75,31 @@ button {
     font-size: 1.1rem;
     background: var(--stone-1);
     border-radius: 0.5rem;
+  }
+
+  *[data-dismissable] {
+    padding: 1.6rem;
+  }
+
+  *[data-dismiss-trigger] {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    opacity: 0.7;
+    background: none;
+    border: none;
+
+    img {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 

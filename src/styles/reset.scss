@@ -12,9 +12,15 @@
   display: none !important;
 }
 
-*[inert] {
+*[inert],
+*[data-inert] {
   pointer-events: none !important;
   cursor: default !important;
+  user-select: none !important;
+}
+
+*[data-noselect] {
+  user-select: none !important;
 }
 
 html {

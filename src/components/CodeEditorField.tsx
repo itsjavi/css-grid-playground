@@ -59,6 +59,7 @@ export default function CodeEditorField({ className, indent: baseIndent = 2, ...
       <textarea
         className={cn('source-code', styles.input)}
         {...props}
+        tabIndex={-1}
         onKeyDown={handleIndentation}
         autoCapitalize="off"
         autoComplete="off"

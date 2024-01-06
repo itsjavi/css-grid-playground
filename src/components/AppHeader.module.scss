@@ -13,7 +13,13 @@
   align-items: center;
   justify-content: center;
   gap: 1em;
-  cursor: default;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+  }
 
   img {
     width: 32px;

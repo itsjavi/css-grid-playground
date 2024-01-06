@@ -91,7 +91,7 @@ function PresetSelector() {
         {gridPresets.map((preset, index) => {
           return (
             <option key={`preset-${index}`} value={index}>
-              {preset.name}
+              {index === 0 ? '- None -' : preset.name}
             </option>
           )
         })}
@@ -117,7 +117,7 @@ function GeneralActionsPanel({
   setEditorsVisible,
 }: { editorsVisible: boolean; setEditorsVisible: (visible: boolean) => void }) {
   return (
-    <div className={styles.panel}>
+    <div className={styles.panel} data-noselect>
       <div className={styles.controlGroup}>
         <PresetSelector />
         <div className={styles.controlGroupNested}>
@@ -142,16 +142,19 @@ function GeneralActionsPanel({
 
 function GridControllers() {
   const store = usePersistentStore()
-  const [currentGrid, setCurrentGrid] = useState(0)
-  const gridContainerButtons: GridControllerAction[] = ['add', 'reset', 'collapse']
-  const gridItemButtons: GridControllerAction[] = ['reset', 'collapse']
+  const [currentGridIndex, setCurrentGridIndex] = useState(0)
 
-  if (store.grids.length > 0) {
-    gridContainerButtons.push('remove')
-    gridItemButtons.push('add')
+  const gridDisabledButtons: GridControllerAction[] = []
+  const gridItemDisabledButtons: GridControllerAction[] = []
+  const currentGrid = store.grids[currentGridIndex]
+
+  if (store.grids.length === 0) {
+    gridDisabledButtons.push('remove')
+    gridItemDisabledButtons.push('add')
+    gridItemDisabledButtons.push('remove')
   }
-  if (store.grids[currentGrid]?.items.length > 0) {
-    gridItemButtons.push('remove')
+  if (currentGrid && currentGrid.items.length === 0) {
+    gridItemDisabledButtons.push('remove')
   }
 
   return (
@@ -173,17 +176,18 @@ function GridControllers() {
         onCodeChange={({ code }) => {
           store.setGridStyles(code)
         }}
-        buttons={gridContainerButtons}
+        buttons={['add', 'remove', 'reset', 'collapse']}
+        disabledButtons={gridDisabledButtons}
         onAddClick={() => {
           store.addGrid()
-          if (currentGrid < 0) {
-            setCurrentGrid(0)
+          if (currentGridIndex < 0) {
+            setCurrentGridIndex(0)
           }
         }}
         onRemoveClick={() => {
           const lastIndex = store.grids.length - 1
-          if (lastIndex === currentGrid) {
-            setCurrentGrid(currentGrid - 1)
+          if (lastIndex === currentGridIndex) {
+            setCurrentGridIndex(currentGridIndex - 1)
           }
           store.removeLastGrid()
         }}
@@ -197,20 +201,21 @@ function GridControllers() {
         onCodeChange={({ code }) => {
           store.setGridItemStyles(code)
         }}
-        buttons={gridItemButtons}
+        buttons={['add', 'remove', 'reset', 'collapse']}
+        disabledButtons={gridItemDisabledButtons}
         onAddClick={() => {
-          store.addGridItem(currentGrid)
+          store.addGridItem(currentGridIndex)
         }}
         onRemoveClick={() => {
-          store.removeLastGridItem(currentGrid)
+          store.removeLastGridItem(currentGridIndex)
         }}
         onResetClick={() => {
           store.resetGridItemStyles()
         }}
         numElements={store.grids.length}
-        elementIndex={currentGrid}
+        elementIndex={currentGridIndex}
         onElementSelect={({ elementIndex }) => {
-          setCurrentGrid(elementIndex)
+          setCurrentGridIndex(elementIndex)
         }}
         elementSelectTemplate={'of grid %'}
       />
@@ -222,6 +227,11 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
   const store = usePersistentStore()
   const gridElements = generateGrids(store)
   const [showEditors, setShowEditors] = useState(true)
+  const presetIndex = store.presetIndex ?? 0
+  const currentPreset = gridPresets[presetIndex]
+  const presetTitle = presetIndex > 0 ? currentPreset.name : undefined
+  const presetDescription = presetIndex > 0 ? currentPreset.description : undefined
+  const hasProse = presetTitle || presetDescription
 
   return (
     <div className={cn(styles.editor, className)} {...props}>
@@ -231,7 +241,12 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
         })}
       >
         <div className={styles.result}>
-          <div>Result:</div>
+          {hasProse && (
+            <section>
+              {presetTitle && <h2 className={styles.resultTitle}>{presetTitle}</h2>}
+              {presetDescription && <div className={styles.resultDescription}>{presetDescription}</div>}
+            </section>
+          )}
           <div className={styles.resultBody}>
             <AsStyled css={store.wrapperStyles}>{gridElements}</AsStyled>
           </div>
