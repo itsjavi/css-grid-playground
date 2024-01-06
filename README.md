@@ -6,7 +6,7 @@ elements in the browser to quickly sketch up a layout for your site.
 The layout, which provides a basic way of editing a container and its direct children, renders changes instantly as you
 update the corresponding CSS giving you instant feedback.
 
-![Demo](public/demo.gif)
+![Demo](public/twitter-card.png)
 
 ## Tech Stack
 
