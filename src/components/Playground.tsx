@@ -74,7 +74,7 @@ function ShowCodeTrigger() {
 
 function PresetSelector() {
   const store = usePersistentStore()
-  const currentRef = useRef<string>('0')
+  const currentRef = useRef<string>(String(store.presetIndex ?? 0))
 
   return (
     <div className={styles.selectWithButton}>
