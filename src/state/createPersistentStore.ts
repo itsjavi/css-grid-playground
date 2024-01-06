@@ -12,6 +12,10 @@ export default function createPersistentStore<T>(
         name,
         storage: createJSONStorage(() => debouncedHashStorage),
       }),
+      {
+        name,
+        enabled: process.env.NODE_ENV === 'development',
+      },
     ),
   )
 }
