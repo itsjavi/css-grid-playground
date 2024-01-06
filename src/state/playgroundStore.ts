@@ -4,17 +4,19 @@ import { DEBOUNCE_DELAY } from './debouncedHashStorage'
 import { gridPresets } from './presets'
 import { PlaygroundState, PlaygroundStore } from './types'
 
+const DEFAULT_PRESET_INDEX = 0
+
 function generateLastModified(): number {
   return Date.now()
 }
 
 function getCurrentPreset(state: PlaygroundState): PlaygroundState {
-  return gridPresets[state.presetIndex ?? 0].createState()
+  return gridPresets[state.presetIndex ?? DEFAULT_PRESET_INDEX].createState()
 }
 
 export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, get) => {
   return {
-    ...gridPresets[1].createState(),
+    ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
     reloadState: () => {
       const state = JSON.parse(decodeLocationHash() ?? '{}')
       set({
@@ -23,7 +25,7 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
       })
     },
     clearState: () => {
-      set(gridPresets[get().presetIndex ?? 0].createState())
+      set(gridPresets[get().presetIndex ?? DEFAULT_PRESET_INDEX].createState())
       setTimeout(() => {
         replaceEncodedLocationHash('')
       }, DEBOUNCE_DELAY * 1.1)
