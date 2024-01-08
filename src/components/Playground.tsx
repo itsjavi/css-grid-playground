@@ -68,7 +68,7 @@ function ShowCodeTrigger() {
       </dialog>
       <button type="button" title="Show code" onClick={handleOpenDialog}>
         <img src={codeIcon} alt="Code" />
-        <span className="sm-hidden">Show code</span>
+        <span className="-sm-hidden">Show code</span>
       </button>
     </>
   )
@@ -85,9 +85,9 @@ function PresetSelector() {
         defaultValue={store.presetIndex}
         onChange={(e) => {
           currentRef.current = e.target.value
-          if (!store.lastModified) {
-            store.selectPreset(Number(e.target.value))
-          }
+          //if (!store.lastModified) {
+          store.selectPreset(Number(e.target.value))
+          // }
         }}
       >
         {gridPresets.map((preset, index) => {
@@ -184,6 +184,7 @@ function GridControllers() {
         }}
       />
       <GridController
+        autoFocus
         title="Grid: "
         code={isGeneralGrid ? store.gridStyles : currentGrid?.styles}
         onCodeChange={({ code: newCode }) => {
@@ -272,7 +273,7 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
           [styles.editorBodyWithoutEditors]: !showEditors,
         })}
       >
-        <div className={styles.result}>
+        <section className={styles.result}>
           {hasProse && (
             <section>
               {presetTitle && <h2 className={styles.resultTitle}>{presetTitle}</h2>}
@@ -282,9 +283,9 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
           <div className={styles.resultBody}>
             <AsStyled css={store.wrapperStyles}>{gridElements}</AsStyled>
           </div>
-        </div>
-        <GeneralActionsPanel editorsVisible={showEditors} setEditorsVisible={setShowEditors} />
+        </section>
         {showEditors && <GridControllers />}
+        <GeneralActionsPanel editorsVisible={showEditors} setEditorsVisible={setShowEditors} />
       </div>
     </div>
   )

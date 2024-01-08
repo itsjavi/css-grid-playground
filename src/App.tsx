@@ -17,6 +17,7 @@ function App() {
     <div className="app">
       <div>
         <AppHeader />
+        <Playground />
         <main {...mainProps}>
           <article data-dismissable>
             <button data-dismiss-trigger title="Close" type="button" onClick={handleDismissArticle}>
@@ -34,7 +35,6 @@ function App() {
             variables.
           </article>
         </main>
-        <Playground />
       </div>
       <AppFooter />
     </div>

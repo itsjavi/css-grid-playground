@@ -49,22 +49,21 @@ export function generateGridsHtmlCode(state: PlaygroundState): string {
       const gridCss = grid.outputStyle
         ? `\n.${grid.className.split(' ').pop()} {\n${indentLines(grid.outputStyle)}\n}`
         : ''
-      return `<style>${gridCss}
-.${grid.children
-        .map((item) => {
-          if (!item.outputStyle) {
-            return undefined
-          }
-          return `${item.className.split(' ').pop()} {\n${indentLines(item.outputStyle)}\n}`
-        })
-        .filter(Boolean)
-        .join('\n')}
-</style>`
+      return `${gridCss}
+${grid.children
+  .map((item) => {
+    if (!item.outputStyle) {
+      return undefined
+    }
+    return `.${item.className.split(' ').pop()} {\n${indentLines(item.outputStyle)}\n}`
+  })
+  .filter(Boolean)
+  .join('\n')}`
     })
     .join('\n')
+    .trim()
 
-  return `${styles}\n
-${individualStyles}\n
+  return `${styles}\n${individualStyles ? `\n<style>\n${individualStyles}\n</style>\n` : ''}
 <div class="wrapper">
 ${html.join('\n')}
 </div>\n`

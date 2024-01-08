@@ -27,6 +27,7 @@ type GridControllerProps = {
   onRemoveClick?: (ctx: GridControllerContext) => void
   onResetClick?: (ctx: GridControllerContext) => void
   toolbarChildren?: React.ReactNode
+  autoFocus?: boolean
 } & ComponentPropsWithoutRef<'div'>
 
 export default function GridController({
@@ -42,6 +43,7 @@ export default function GridController({
   onResetClick,
   children,
   toolbarChildren,
+  autoFocus,
   ...props
 }: GridControllerProps) {
   const cleanCode = unindentLines(code ?? '')
@@ -133,6 +135,7 @@ export default function GridController({
           value={cleanCode}
           className={styles.code}
           onChange={handleChange}
+          autoFocus={autoFocus}
         />
       )}
       {expanded && children}
