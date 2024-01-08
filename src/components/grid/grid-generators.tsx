@@ -5,17 +5,19 @@ import GridContainer from './GridContainer'
 export function generateGridsVirtualDom(state: PlaygroundState): GridContainerVirtualDom[] {
   const elements: GridContainerVirtualDom[] = []
 
-  for (const i in state.grids) {
+  for (let i = 0; i < state.grids.length; i++) {
     const grid = state.grids[i]
 
     elements.push({
-      className: 'grid',
+      className: `grid grid-${i + 1}`,
       style: safelyJoinCss(state.gridStyles, grid.styles),
+      outputStyle: grid.styles,
       children: grid.items.map((item, index) => {
         return {
-          className: 'grid-item',
+          className: `grid-item grid-item-${index + 1}`,
           style: safelyJoinCss(state.gridItemStyles, item.styles),
-          innerText: String(index + 1),
+          outputStyle: item.styles,
+          innerText: item.text ?? String(index + 1),
         }
       }),
     })
@@ -42,7 +44,27 @@ export function generateGridsHtmlCode(state: PlaygroundState): string {
 .grid-item {\n${indentLines(state.gridItemStyles)}\n}
 </style>`
 
+  const individualStyles = elements
+    .map((grid) => {
+      const gridCss = grid.outputStyle
+        ? `\n.${grid.className.split(' ').pop()} {\n${indentLines(grid.outputStyle)}\n}`
+        : ''
+      return `<style>${gridCss}
+.${grid.children
+        .map((item) => {
+          if (!item.outputStyle) {
+            return undefined
+          }
+          return `${item.className.split(' ').pop()} {\n${indentLines(item.outputStyle)}\n}`
+        })
+        .filter(Boolean)
+        .join('\n')}
+</style>`
+    })
+    .join('\n')
+
   return `${styles}\n
+${individualStyles}\n
 <div class="wrapper">
 ${html.join('\n')}
 </div>\n`
@@ -52,10 +74,18 @@ export function generateGrids(state: PlaygroundState): JSX.Element[] {
   const domElements = generateGridsVirtualDom(state)
   const elements: JSX.Element[] = []
 
-  for (const i in domElements) {
+  for (let i = 0; i < domElements.length; i++) {
     const grid = domElements[i]
 
-    elements.push(<GridContainer key={`grid${i}`} className={grid.className} css={grid.style} items={grid.children} />)
+    elements.push(
+      <GridContainer
+        gridIndex={i}
+        key={`grid${i}`}
+        className={grid.className}
+        css={grid.style}
+        items={grid.children}
+      />,
+    )
   }
 
   return elements

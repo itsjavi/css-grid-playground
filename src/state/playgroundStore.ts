@@ -16,7 +16,13 @@ function getCurrentPreset(state: PlaygroundState): PlaygroundState {
 
 export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, get) => {
   return {
-    ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
+    ...{
+      ...{
+        selectedGrid: -1,
+        selectedGridItem: -1,
+      },
+      ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
+    },
     reloadState: () => {
       const state = JSON.parse(decodeLocationHash() ?? '{}')
       set({
@@ -48,62 +54,123 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
       const currentPreset = getCurrentPreset(currentState)
       return set({ wrapperStyles: currentPreset.wrapperStyles, lastModified: generateLastModified() })
     },
-    setGridStyles: (gridStyles) => {
-      const grids = get().grids.map((grid) => ({ ...grid, styles: gridStyles }))
+    setGridStyles: (gridStyles, gridIndex) => {
+      const grids = get().grids
+      if (gridIndex !== undefined) {
+        if (!grids[gridIndex]) {
+          throw new Error(`Grid not found: #${gridIndex}`)
+        }
+        grids[gridIndex].styles = gridStyles
+        set({ grids, lastModified: generateLastModified() })
+        return
+      }
       set({ grids, gridStyles: gridStyles, lastModified: generateLastModified() })
     },
     resetGridStyles: () => {
       const currentState = get()
-      const currentPreset = getCurrentPreset(currentState)
-      const grids = currentState.grids.map((grid) => ({ ...grid, styles: currentPreset.gridStyles }))
-      set({ grids, gridStyles: currentPreset.gridStyles, lastModified: generateLastModified() })
+      const grids = currentState.grids.map((grid) => ({ ...grid, styles: undefined }))
+      set({ grids, lastModified: generateLastModified() })
     },
-    setGridItemStyles: (gridItemStyles) => {
+    setGridItemStyles: (gridItemStyles, gridIndex, gridItemIndex) => {
+      if (gridIndex !== undefined && gridItemIndex !== undefined) {
+        const currentState = get()
+        const grids = currentState.grids
+        if (!grids[gridIndex]) {
+          throw new Error(`Grid not found: #${gridIndex}`)
+        }
+        if (!grids[gridIndex].items[gridItemIndex]) {
+          throw new Error(`Grid item not found: #${gridItemIndex}`)
+        }
+        grids[gridIndex].items[gridItemIndex].styles = gridItemStyles
+        set({ grids, lastModified: generateLastModified() })
+        return
+      }
       set({ gridItemStyles: gridItemStyles, lastModified: generateLastModified() })
     },
     resetGridItemStyles: () => {
       const currentState = get()
-      const currentPreset = getCurrentPreset(currentState)
-      set({ gridItemStyles: currentPreset.gridItemStyles, lastModified: generateLastModified() })
+      const grids = currentState.grids.map((grid) => ({
+        ...grid,
+        items: grid.items.map((item) => ({ ...item, styles: undefined })),
+      }))
+      set({ grids, lastModified: generateLastModified() })
     },
     //
     addGrid: () => {
       const currentState = get()
       const currentGrids = currentState.grids
-      const currentPreset = getCurrentPreset(currentState)
       const lastGridCopy = currentGrids.length > 0 ? deepClone(currentGrids[currentGrids.length - 1]) : undefined
 
       return set({
+        selectedGrid: currentGrids.length,
+        selectedGridItem: -1,
         grids: [
           ...currentGrids,
           lastGridCopy ?? {
-            styles: currentPreset.gridStyles,
             items: [],
           },
         ],
         lastModified: generateLastModified(),
       })
     },
-    removeLastGrid: () => {
-      const grids = [...get().grids]
-      if (grids.length === 0) {
-        return
-      }
-      grids.pop()
-      set({ grids, lastModified: generateLastModified() })
-    },
+    // removeLastGrid: () => {
+    //   const grids = [...get().grids]
+    //   if (grids.length === 0) {
+    //     return
+    //   }
+    //   grids.pop()
+    //   set({ grids, lastModified: generateLastModified() })
+    // },
     //
     addGridItem: (gridIndex) => {
-      const grids = [...get().grids]
+      const currentState = get()
+      const grids = [...currentState.grids]
+      const selectedGridItem = grids[gridIndex].items.length
       grids[gridIndex].items.push({})
-      set({ grids, lastModified: generateLastModified() })
+      set({ grids, lastModified: generateLastModified(), selectedGridItem })
     },
-    removeLastGridItem: (gridIndex) => {
+    // removeLastGridItem: (gridIndex) => {
+    //   const grids = [...get().grids]
+    //   if (grids.length === 0 || grids[gridIndex].items.length === 0) {
+    //     return
+    //   }
+    //   grids[gridIndex].items.pop()
+    //   set({ grids, lastModified: generateLastModified() })
+    // },
+    removeGrid: (gridIndex) => {
       const grids = [...get().grids]
-      if (grids.length === 0 || grids[gridIndex].items.length === 0) {
-        return
+      if (!grids[gridIndex]) {
+        throw new Error(`Grid not found: #${gridIndex}`)
       }
-      grids[gridIndex].items.pop()
+      const selectedGrid = grids.length - 2
+      grids.splice(gridIndex, 1)
+      set({ grids, selectedGrid, lastModified: generateLastModified() })
+    },
+    removeGridItem: (gridIndex, gridItemIndex) => {
+      const grids = [...get().grids]
+      if (!grids[gridIndex]) {
+        throw new Error(`Grid not found: #${gridIndex}`)
+      }
+      if (grids[gridIndex].items.length === 0) {
+        throw new Error(`Grid item not found: #${gridItemIndex}`)
+      }
+      const selectedGridItem = grids[gridIndex].items.length - 2
+      grids[gridIndex].items.splice(gridItemIndex, 1)
+      set({ grids, selectedGridItem, lastModified: generateLastModified() })
+    },
+    //
+    selectGrid: (gridIndex) => set({ selectedGrid: gridIndex, selectedGridItem: -1 }),
+    selectGridItem: (gridItemIndex) => set({ selectedGridItem: gridItemIndex }),
+    setGridItemText(text, gridIndex, gridItemIndex) {
+      console.log('setGridItemText', text, gridIndex, gridItemIndex)
+      const grids = [...get().grids]
+      if (!grids[gridIndex]) {
+        throw new Error(`Grid not found: #${gridIndex}`)
+      }
+      if (!grids[gridIndex].items[gridItemIndex]) {
+        throw new Error(`Grid item not found: #${gridItemIndex}`)
+      }
+      grids[gridIndex].items[gridItemIndex].text = text
       set({ grids, lastModified: generateLastModified() })
     },
   }

@@ -8,6 +8,7 @@ import { ComponentPropsWithoutRef, useRef, useState } from 'react'
 import AsStyled from './AsStyled'
 import styles from './Playground.module.scss'
 import GridController, { GridControllerAction } from './grid/GridController'
+import GridSelector from './grid/GridSelector'
 import { generateGrids, generateGridsHtmlCode } from './grid/grid-generators'
 
 type PlaygroundProps = {
@@ -18,6 +19,7 @@ function ShowCodeTrigger() {
   const store = usePersistentStore()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const codePreviewRef = useRef<HTMLPreElement>(null)
+
   const handleCopyButtonClick = () => {
     if (!codePreviewRef.current) {
       return
@@ -142,19 +144,30 @@ function GeneralActionsPanel({
 
 function GridControllers() {
   const store = usePersistentStore()
-  const [currentGridIndex, setCurrentGridIndex] = useState(0)
+  const isSingleGrid = store.grids.length === 1
+  const currentGrid = store.grids[isSingleGrid ? 0 : store.selectedGrid]
+  const currentGridItem = currentGrid?.items[store.selectedGridItem]
+
+  const isGeneralGrid = store.selectedGrid === -1
+  const isGeneralGridItem = store.selectedGridItem === -1
 
   const gridDisabledButtons: GridControllerAction[] = []
   const gridItemDisabledButtons: GridControllerAction[] = []
-  const currentGrid = store.grids[currentGridIndex]
+  const numGridItems = currentGrid?.items.length ?? 0
 
-  if (store.grids.length === 0) {
+  if (isGeneralGrid || store.grids.length === 0) {
     gridDisabledButtons.push('remove')
-    gridItemDisabledButtons.push('add')
-    gridItemDisabledButtons.push('remove')
+    // gridDisabledButtons.push('reset')
   }
-  if (currentGrid && currentGrid.items.length === 0) {
+
+  if (!currentGrid || store.grids.length === 0) {
+    gridItemDisabledButtons.push('add')
+    // gridItemDisabledButtons.push('remove')
+  }
+
+  if (isGeneralGridItem || numGridItems === 0) {
     gridItemDisabledButtons.push('remove')
+    // gridItemDisabledButtons.push('reset')
   }
 
   return (
@@ -165,59 +178,78 @@ function GridControllers() {
         onCodeChange={({ code }) => {
           store.setWrapperStyles(code)
         }}
-        buttons={['reset', 'collapse']}
+        buttons={['collapse']}
         onResetClick={() => {
           store.resetWrapperStyles()
         }}
       />
       <GridController
-        title="Grids"
-        code={store.gridStyles}
-        onCodeChange={({ code }) => {
-          store.setGridStyles(code)
+        title="Grid: "
+        code={isGeneralGrid ? store.gridStyles : currentGrid?.styles}
+        onCodeChange={({ code: newCode }) => {
+          store.setGridStyles(newCode, isGeneralGrid ? undefined : store.selectedGrid)
         }}
         buttons={['add', 'remove', 'reset', 'collapse']}
         disabledButtons={gridDisabledButtons}
         onAddClick={() => {
           store.addGrid()
-          if (currentGridIndex < 0) {
-            setCurrentGridIndex(0)
-          }
         }}
         onRemoveClick={() => {
-          const lastIndex = store.grids.length - 1
-          if (lastIndex === currentGridIndex) {
-            setCurrentGridIndex(currentGridIndex - 1)
+          if (isGeneralGrid) {
+            return
           }
-          store.removeLastGrid()
+          store.removeGrid(store.selectedGrid)
         }}
         onResetClick={() => {
           store.resetGridStyles()
         }}
+        toolbarChildren={
+          <GridSelector
+            elementCount={store.grids.length}
+            value={store.selectedGrid}
+            onChange={(value) => {
+              store.selectGrid(value)
+            }}
+            label="Grid styles:"
+            labelTemplate="#%"
+          />
+        }
       />
       <GridController
-        title="Grid Items"
-        code={store.gridItemStyles}
-        onCodeChange={({ code }) => {
-          store.setGridItemStyles(code)
+        title="Item: "
+        code={isGeneralGridItem ? store.gridItemStyles : currentGridItem?.styles}
+        onCodeChange={({ code: newCode }) => {
+          if (isGeneralGridItem) {
+            store.setGridItemStyles(newCode)
+            return
+          }
+          store.setGridItemStyles(newCode, store.selectedGrid, store.selectedGridItem)
         }}
         buttons={['add', 'remove', 'reset', 'collapse']}
         disabledButtons={gridItemDisabledButtons}
         onAddClick={() => {
-          store.addGridItem(currentGridIndex)
+          store.addGridItem(isSingleGrid ? 0 : store.selectedGrid)
         }}
         onRemoveClick={() => {
-          store.removeLastGridItem(currentGridIndex)
+          if (isGeneralGridItem) {
+            return
+          }
+          store.removeGridItem(isSingleGrid ? 0 : store.selectedGrid, store.selectedGridItem)
         }}
         onResetClick={() => {
           store.resetGridItemStyles()
         }}
-        numElements={store.grids.length}
-        elementIndex={currentGridIndex}
-        onElementSelect={({ elementIndex }) => {
-          setCurrentGridIndex(elementIndex)
-        }}
-        elementSelectTemplate={'of grid %'}
+        toolbarChildren={
+          <GridSelector
+            elementCount={numGridItems}
+            value={store.selectedGridItem}
+            onChange={(value) => {
+              store.selectGridItem(value)
+            }}
+            label={'Grid Item styles:'}
+            labelTemplate="#%"
+          />
+        }
       />
     </div>
   )

@@ -12,25 +12,6 @@ import styles from './GridController.module.scss'
 type GridControllerContext = {
   name?: keyof PlaygroundState
   code: string
-  elementIndex?: number
-}
-
-type PropsWithElementSelector = {
-  numElements: number
-  elementIndex: number
-  elementSelectTemplate?: string
-  onElementSelect?: (
-    ctx: GridControllerContext & {
-      elementIndex: number
-    },
-  ) => void
-}
-
-type PropsWithoutElementSelector = {
-  numElements?: never
-  elementIndex?: never
-  onElementSelect?: never
-  elementSelectTemplate?: never
 }
 
 export type GridControllerAction = 'add' | 'remove' | 'reset' | 'collapse'
@@ -45,8 +26,8 @@ type GridControllerProps = {
   onAddClick?: (ctx: GridControllerContext) => void
   onRemoveClick?: (ctx: GridControllerContext) => void
   onResetClick?: (ctx: GridControllerContext) => void
-} & (PropsWithElementSelector | PropsWithoutElementSelector) &
-  ComponentPropsWithoutRef<'div'>
+  toolbarChildren?: React.ReactNode
+} & ComponentPropsWithoutRef<'div'>
 
 export default function GridController({
   className,
@@ -55,14 +36,12 @@ export default function GridController({
   code,
   buttons = ['collapse'],
   disabledButtons = [],
-  numElements,
-  elementIndex,
-  elementSelectTemplate,
   onCodeChange,
-  onElementSelect,
   onAddClick,
   onRemoveClick,
   onResetClick,
+  children,
+  toolbarChildren,
   ...props
 }: GridControllerProps) {
   const cleanCode = unindentLines(code ?? '')
@@ -74,7 +53,6 @@ export default function GridController({
       onCodeChange({
         name,
         code: e.target.value,
-        elementIndex,
       })
     }
     codeRef.current = e.target.value
@@ -84,11 +62,8 @@ export default function GridController({
     return {
       name: name,
       code: codeRef.current ?? '',
-      elementIndex,
     }
   }
-
-  const showItemSelector = elementIndex !== undefined && numElements !== undefined && numElements > 1
 
   return (
     <div className={cn(styles.controller, className)} {...props}>
@@ -110,25 +85,7 @@ export default function GridController({
             </div>
           )}
           <div className={styles.title}>{title}</div>
-          {showItemSelector && (
-            <select
-              value={elementIndex.toString()}
-              onChange={(e) => {
-                const index = Number(e.target.value)
-                onElementSelect?.({
-                  name,
-                  code: codeRef.current ?? '',
-                  elementIndex: index,
-                })
-              }}
-            >
-              {Array.from({ length: numElements }).map((_, index) => (
-                <option key={`el-${index}`} value={index}>
-                  {elementSelectTemplate?.replace('%', (index + 1).toString()) ?? `Element ${index + 1}`}
-                </option>
-              ))}
-            </select>
-          )}
+          {toolbarChildren}
         </div>
         <div className={styles.actions}>
           {buttons.includes('add') && (
@@ -169,7 +126,16 @@ export default function GridController({
           )}
         </div>
       </div>
-      {expanded && <CodeEditorField name={name} value={cleanCode} className={styles.code} onChange={handleChange} />}
+      {expanded && (
+        <CodeEditorField
+          placeholder="/** Custom CSS styles **/"
+          name={name}
+          value={cleanCode}
+          className={styles.code}
+          onChange={handleChange}
+        />
+      )}
+      {expanded && children}
     </div>
   )
 }
