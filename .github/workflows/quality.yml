@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write # needed for Biome to write diagnostic comments to PRs
+
 concurrency:
   group: checkCodeQuality-${{ github.ref }}
   cancel-in-progress: true

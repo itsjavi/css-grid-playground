@@ -1,10 +1,11 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.5.0/schema.json",
   "organizeImports": {
     "enabled": true
   },
   "files": {
-    "ignore": ["public/**/*", "build/**/*", "dist/**/*"]
+    "ignore": ["public/**/*", "build/**/*", "dist/**/*", "*.svg"],
+    "ignoreUnknown": true
   },
   "vcs": {
     "enabled": true,
@@ -48,7 +49,8 @@
     "enabled": true,
     "lineWidth": 120,
     "indentWidth": 2,
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "formatWithErrors": true
   },
   "javascript": {
     "formatter": {
@@ -64,6 +66,11 @@
     }
   },
   "json": {
+    "formatter": {
+      "enabled": false
+    }
+  },
+  "css": {
     "formatter": {
       "enabled": false
     }
