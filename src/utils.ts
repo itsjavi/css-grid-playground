@@ -35,9 +35,17 @@ export function decodeLocationHash(): string | undefined {
   return urlSafeBase64Decode(hash)
 }
 
+export function decodeLocationState<T extends { noPersist?: boolean }>(): T | Partial<T> {
+  const hash = decodeLocationHash()
+  const data = JSON.parse(hash ?? '{"state": {}}').state
+
+  return data ?? {}
+}
+
 export function pushEncodedLocationHash(value: string): string {
   const newHash = urlSafeBase64Encode(value)
-  window.location.hash = newHash
+  // window.location.hash = newHash
+  history.pushState(undefined, '', `#${newHash}`)
   return newHash
 }
 

@@ -1,6 +1,6 @@
-import { decodeLocationHash, deepClone, replaceEncodedLocationHash } from '@/utils'
+import { decodeLocationHash, decodeLocationState, deepClone } from '@/utils'
+import { useEffect } from 'react'
 import createPersistentStore from './createPersistentStore'
-import { DEBOUNCE_DELAY } from './debouncedHashStorage'
 import { gridPresets } from './presets'
 import { PlaygroundState, PlaygroundStore } from './types'
 
@@ -14,33 +14,40 @@ function getCurrentPreset(state: PlaygroundState): PlaygroundState {
   return gridPresets[state.presetIndex ?? DEFAULT_PRESET_INDEX].createState()
 }
 
-export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, get) => {
-  return {
+const usePlaygroundStore = createPersistentStore<PlaygroundStore>((rawSet, get) => {
+  const defaultState: PlaygroundState = {
     ...{
-      ...{
-        selectedGrid: -1,
-        selectedGridItem: -1,
-      },
-      ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
+      selectedGrid: -1,
+      selectedGridItem: -1,
     },
-    reloadState: () => {
-      const state = JSON.parse(decodeLocationHash() ?? '{}')
-      set({
-        ...get(),
-        ...state,
+    ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
+  }
+
+  const updateState = (state: Partial<PlaygroundState>) => {
+    rawSet({ lastModified: generateLastModified(), ...state })
+  }
+
+  return {
+    ...defaultState,
+    loadStateFromLocationHash: () => {
+      const locationState: Partial<PlaygroundState> = decodeLocationState<PlaygroundState>()
+      const currentState = get()
+
+      if (locationState.lastModified === currentState.lastModified) {
+        console.log('loadStateFromLocationHash skipped: timestamps are equal')
+        return
+      }
+
+      rawSet({
+        ...currentState,
+        ...locationState,
       })
     },
-    clearState: () => {
-      set(gridPresets[get().presetIndex ?? DEFAULT_PRESET_INDEX].createState())
-      setTimeout(() => {
-        replaceEncodedLocationHash('')
-      }, DEBOUNCE_DELAY * 1.1)
-    },
-    setTitle: (title) => set({ title, lastModified: generateLastModified() }),
+    setTitle: (title) => updateState({ title }),
     selectPreset: (presetIndex) => {
       const currentState = get()
       const newPreset = gridPresets[presetIndex].createState()
-      set({
+      updateState({
         ...currentState,
         ...newPreset,
         presetIndex,
@@ -48,11 +55,11 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
       })
     },
     //
-    setWrapperStyles: (wrapperStyles) => set({ wrapperStyles: wrapperStyles, lastModified: generateLastModified() }),
+    setWrapperStyles: (wrapperStyles) => updateState({ wrapperStyles: wrapperStyles }),
     resetWrapperStyles: () => {
       const currentState = get()
       const currentPreset = getCurrentPreset(currentState)
-      return set({ wrapperStyles: currentPreset.wrapperStyles, lastModified: generateLastModified() })
+      return updateState({ wrapperStyles: currentPreset.wrapperStyles })
     },
     setGridStyles: (gridStyles, gridIndex) => {
       const grids = get().grids
@@ -61,15 +68,15 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
           throw new Error(`Grid not found: #${gridIndex}`)
         }
         grids[gridIndex].styles = gridStyles
-        set({ grids, lastModified: generateLastModified() })
+        updateState({ grids })
         return
       }
-      set({ grids, gridStyles: gridStyles, lastModified: generateLastModified() })
+      updateState({ grids, gridStyles: gridStyles })
     },
     resetGridStyles: () => {
       const currentState = get()
       const grids = currentState.grids.map((grid) => ({ ...grid, styles: undefined }))
-      set({ grids, lastModified: generateLastModified() })
+      updateState({ grids })
     },
     setGridItemStyles: (gridItemStyles, gridIndex, gridItemIndex) => {
       if (gridIndex !== undefined && gridItemIndex !== undefined) {
@@ -82,10 +89,10 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
           throw new Error(`Grid item not found: #${gridItemIndex}`)
         }
         grids[gridIndex].items[gridItemIndex].styles = gridItemStyles
-        set({ grids, lastModified: generateLastModified() })
+        updateState({ grids })
         return
       }
-      set({ gridItemStyles: gridItemStyles, lastModified: generateLastModified() })
+      updateState({ gridItemStyles: gridItemStyles })
     },
     resetGridItemStyles: () => {
       const currentState = get()
@@ -93,7 +100,7 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
         ...grid,
         items: grid.items.map((item) => ({ ...item, styles: undefined })),
       }))
-      set({ grids, lastModified: generateLastModified() })
+      updateState({ grids })
     },
     //
     addGrid: () => {
@@ -101,7 +108,7 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
       const currentGrids = currentState.grids
       const lastGridCopy = currentGrids.length > 0 ? deepClone(currentGrids[currentGrids.length - 1]) : undefined
 
-      return set({
+      return updateState({
         selectedGrid: currentGrids.length,
         selectedGridItem: -1,
         grids: [
@@ -110,33 +117,15 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
             items: [],
           },
         ],
-        lastModified: generateLastModified(),
       })
     },
-    // removeLastGrid: () => {
-    //   const grids = [...get().grids]
-    //   if (grids.length === 0) {
-    //     return
-    //   }
-    //   grids.pop()
-    //   set({ grids, lastModified: generateLastModified() })
-    // },
-    //
     addGridItem: (gridIndex) => {
       const currentState = get()
       const grids = [...currentState.grids]
       const selectedGridItem = grids[gridIndex].items.length
       grids[gridIndex].items.push({})
-      set({ grids, lastModified: generateLastModified(), selectedGridItem })
+      updateState({ grids, selectedGridItem })
     },
-    // removeLastGridItem: (gridIndex) => {
-    //   const grids = [...get().grids]
-    //   if (grids.length === 0 || grids[gridIndex].items.length === 0) {
-    //     return
-    //   }
-    //   grids[gridIndex].items.pop()
-    //   set({ grids, lastModified: generateLastModified() })
-    // },
     removeGrid: (gridIndex) => {
       const grids = [...get().grids]
       if (!grids[gridIndex]) {
@@ -144,7 +133,7 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
       }
       const selectedGrid = grids.length - 2
       grids.splice(gridIndex, 1)
-      set({ grids, selectedGrid, lastModified: generateLastModified() })
+      updateState({ grids, selectedGrid })
     },
     removeGridItem: (gridIndex, gridItemIndex) => {
       const grids = [...get().grids]
@@ -156,11 +145,11 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
       }
       const selectedGridItem = grids[gridIndex].items.length - 2
       grids[gridIndex].items.splice(gridItemIndex, 1)
-      set({ grids, selectedGridItem, lastModified: generateLastModified() })
+      updateState({ grids, selectedGridItem })
     },
     //
-    selectGrid: (gridIndex) => set({ selectedGrid: gridIndex, selectedGridItem: -1 }),
-    selectGridItem: (gridItemIndex) => set({ selectedGridItem: gridItemIndex }),
+    selectGrid: (gridIndex) => updateState({ selectedGrid: gridIndex, selectedGridItem: -1 }),
+    selectGridItem: (gridItemIndex) => updateState({ selectedGridItem: gridItemIndex }),
     setGridItemText(text, gridIndex, gridItemIndex) {
       console.log('setGridItemText', text, gridIndex, gridItemIndex)
       const grids = [...get().grids]
@@ -171,7 +160,24 @@ export const usePersistentStore = createPersistentStore<PlaygroundStore>((set, g
         throw new Error(`Grid item not found: #${gridItemIndex}`)
       }
       grids[gridIndex].items[gridItemIndex].text = text
-      set({ grids, lastModified: generateLastModified() })
+      updateState({ grids })
     },
   }
 })
+
+export default usePlaygroundStore
+
+export function useUpdateStateOnHistoryChange() {
+  const store = usePlaygroundStore()
+  const { loadStateFromLocationHash } = store
+  const handleHistoryChange = () => {
+    loadStateFromLocationHash()
+  }
+
+  useEffect(() => {
+    window.addEventListener('hashchange', handleHistoryChange)
+    return () => {
+      window.removeEventListener('hashchange', handleHistoryChange)
+    }
+  }, [])
+}

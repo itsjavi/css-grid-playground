@@ -8,21 +8,6 @@
   box-sizing: border-box;
 }
 
-*[hidden] {
-  display: none !important;
-}
-
-*[inert],
-*[data-inert] {
-  pointer-events: none !important;
-  cursor: default !important;
-  user-select: none !important;
-}
-
-*[data-noselect] {
-  user-select: none !important;
-}
-
 html {
   margin: 0;
   padding: 0;
@@ -145,7 +130,23 @@ dialog[open] {
   display: block;
 }
 
+*[hidden] {
+  display: none !important;
+}
+
+*[inert],
+*[data-inert] {
+  pointer-events: none !important;
+  cursor: default !important;
+  user-select: none !important;
+}
+
+*[data-noselect] {
+  user-select: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after,
@@ -158,6 +159,7 @@ dialog[open] {
 }
 
 @media (prefers-reduced-transparency: reduce) {
+
   *,
   *::before,
   *::after {

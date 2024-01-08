@@ -1,4 +1,4 @@
-import { usePersistentStore } from '@/state/playgroundStore'
+import usePlaygroundStore from '@/state/usePlaygroundStore'
 import { cn } from '@/utils'
 import { ComponentPropsWithoutRef } from 'react'
 import AsStyled from '../AsStyled'
@@ -13,7 +13,7 @@ type GridItemProps = {
 } & ComponentPropsWithoutRef<'div'>
 
 export default function GridItem({ className, children, gridIndex, itemIndex, css, ...props }: GridItemProps) {
-  const store = usePersistentStore()
+  const store = usePlaygroundStore()
   const isSelected = store.selectedGrid === gridIndex && store.selectedGridItem === itemIndex
   const text = String(children || className)
 

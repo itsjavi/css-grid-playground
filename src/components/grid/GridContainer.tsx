@@ -1,5 +1,5 @@
-import { usePersistentStore } from '@/state/playgroundStore'
 import { GridItemVirtualDom } from '@/state/types'
+import usePlaygroundStore from '@/state/usePlaygroundStore'
 import { cn, safelyJoinCss } from '@/utils'
 import { ComponentPropsWithoutRef } from 'react'
 import AsStyled from '../AsStyled'
@@ -15,7 +15,7 @@ type GridContainerProps = {
 } & ComponentPropsWithoutRef<'div'>
 
 export default function GridContainer({ className, css, gridIndex, items, ...props }: GridContainerProps) {
-  const store = usePersistentStore()
+  const store = usePlaygroundStore()
   const children = items.map((item, index) => {
     const key = `${className}-item${index}`
 

@@ -1,6 +1,6 @@
 import { StateCreator, create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
-import debouncedHashStorage from './debouncedHashStorage'
+import { debouncedLocalStorage } from './debouncedStorage'
 
 export default function createPersistentStore<T>(
   creator: StateCreator<T, [['zustand/devtools', never], ['zustand/persist', unknown]], []>,
@@ -10,7 +10,7 @@ export default function createPersistentStore<T>(
     devtools(
       persist(creator, {
         name,
-        storage: createJSONStorage(() => debouncedHashStorage),
+        storage: createJSONStorage(() => debouncedLocalStorage),
       }),
       {
         name,

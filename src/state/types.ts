@@ -57,7 +57,14 @@ export type PlaygroundState = {
    * Grid containers and their children with styles and other data
    */
   grids: GridContainerState[]
+  /**
+   * The last time the state was modified
+   */
   lastModified?: number
+  /**
+   * If true, the state will not be persisted in the URL
+   */
+  noPersist?: boolean | undefined
 }
 
 export type PlaygroundActions = {
@@ -77,8 +84,7 @@ export type PlaygroundActions = {
   removeGridItem: (gridIndex: number, gridItemIndex: number) => void
   // removeLastGridItem: (gridIndex: number) => void
   //
-  reloadState: () => void
-  clearState: () => void
+  loadStateFromLocationHash: () => void
   //
   selectPreset: (presetIndex: number) => void
   //

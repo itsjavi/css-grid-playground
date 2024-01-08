@@ -1,7 +1,12 @@
-import { decodeLocationHash, pushEncodedLocationHash } from '@/utils'
+import { decodeLocationHash, decodeLocationState, pushEncodedLocationHash } from '@/utils'
 import { StateStorage } from 'zustand/middleware'
 
 type DebouncedHashStorage = StateStorage & {
+  updateTimeout: NodeJS.Timeout | number | undefined
+  updateDelay: number
+}
+
+type DebouncedLocalStorage = StateStorage & {
   updateTimeout: NodeJS.Timeout | number | undefined
   updateDelay: number
 }
@@ -13,6 +18,10 @@ const hashStorage: StateStorage = {
     return decodeLocationHash() ?? ''
   },
   setItem: (_, newValue): void => {
+    const decodedValue = decodeLocationState()
+    if (decodedValue && decodedValue.noPersist === true) {
+      return
+    }
     pushEncodedLocationHash(newValue)
     //replaceEncodedLocationHash(newValue)
   },
@@ -22,7 +31,7 @@ const hashStorage: StateStorage = {
 }
 
 // Updates hash every DEBOUNCE_DELAY ms
-const debouncedHashStorage: DebouncedHashStorage = {
+export const debouncedHashStorage: DebouncedHashStorage = {
   updateTimeout: undefined,
   updateDelay: DEBOUNCE_DELAY,
   getItem: hashStorage.getItem,
@@ -37,4 +46,17 @@ const debouncedHashStorage: DebouncedHashStorage = {
   },
 }
 
-export default debouncedHashStorage
+export const debouncedLocalStorage: DebouncedLocalStorage = {
+  updateTimeout: undefined,
+  updateDelay: DEBOUNCE_DELAY,
+  getItem: localStorage.getItem,
+  removeItem: localStorage.removeItem,
+  setItem: (name, newValue): void => {
+    if (debouncedLocalStorage.updateTimeout) {
+      clearTimeout(debouncedLocalStorage.updateTimeout)
+    }
+    debouncedLocalStorage.updateTimeout = setTimeout(() => {
+      localStorage.setItem(name, newValue)
+    }, debouncedLocalStorage.updateDelay)
+  },
+}

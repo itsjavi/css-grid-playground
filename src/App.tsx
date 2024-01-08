@@ -1,40 +1,18 @@
-import closeIcon from '@/assets/close-2.svg'
-import { useState } from 'react'
 import AppFooter from './components/AppFooter'
 import AppHeader from './components/AppHeader'
+import AppMainText from './components/AppMainText'
 import Playground from './components/Playground'
+import { useUpdateStateOnHistoryChange } from './state/usePlaygroundStore'
 
 function App() {
-  const [showArticle, setShowArticle] = useState(true)
-  const handleDismissArticle = () => {
-    setShowArticle(false)
-  }
-  const mainProps: React.HTMLAttributes<HTMLElement> = {}
-  if (!showArticle) {
-    mainProps.hidden = true
-  }
+  useUpdateStateOnHistoryChange()
+
   return (
-    <div className="app">
+    <div id="app">
       <div>
         <AppHeader />
         <Playground />
-        <main {...mainProps}>
-          <article data-dismissable>
-            <button data-dismiss-trigger title="Close" type="button" onClick={handleDismissArticle}>
-              <img src={closeIcon} alt="Close" />
-            </button>
-            Online playground for CSS Grids where you can add/remove elements, edit CSS properties, see the changes in
-            real time, and share the state via URL. It also comes with presets inspired by{' '}
-            <a href="https://web.dev/learn/css/grid" target="_blank" rel="noreferrer">
-              web.dev
-            </a>
-            's examples, and supports{' '}
-            <a href="https://open-props.style/#colors" target="_blank" rel="noreferrer">
-              Open Props
-            </a>{' '}
-            variables.
-          </article>
-        </main>
+        <AppMainText />
       </div>
       <AppFooter />
     </div>

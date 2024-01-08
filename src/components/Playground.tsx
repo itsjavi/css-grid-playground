@@ -1,8 +1,8 @@
 import codeIcon from '@/assets/code-2.svg'
 import copyIcon from '@/assets/copy.svg'
 import restoreIcon from '@/assets/history.svg'
-import { usePersistentStore } from '@/state/playgroundStore'
 import { gridPresets } from '@/state/presets'
+import usePlaygroundStore from '@/state/usePlaygroundStore'
 import { cn } from '@/utils'
 import { ComponentPropsWithoutRef, useRef, useState } from 'react'
 import AsStyled from './AsStyled'
@@ -16,7 +16,7 @@ type PlaygroundProps = {
 } & ComponentPropsWithoutRef<'div'>
 
 function ShowCodeTrigger() {
-  const store = usePersistentStore()
+  const store = usePlaygroundStore()
   const dialogRef = useRef<HTMLDialogElement>(null)
   const codePreviewRef = useRef<HTMLPreElement>(null)
 
@@ -75,7 +75,7 @@ function ShowCodeTrigger() {
 }
 
 function PresetSelector() {
-  const store = usePersistentStore()
+  const store = usePlaygroundStore()
   const currentRef = useRef<string>(String(store.presetIndex ?? 0))
 
   return (
@@ -143,7 +143,7 @@ function GeneralActionsPanel({
 }
 
 function GridControllers() {
-  const store = usePersistentStore()
+  const store = usePlaygroundStore()
   const isSingleGrid = store.grids.length === 1
   const currentGrid = store.grids[isSingleGrid ? 0 : store.selectedGrid]
   const currentGridItem = currentGrid?.items[store.selectedGridItem]
@@ -257,7 +257,7 @@ function GridControllers() {
 }
 
 export default function Playground({ className, ...props }: PlaygroundProps) {
-  const store = usePersistentStore()
+  const store = usePlaygroundStore()
   const gridElements = generateGrids(store)
   const [showEditors, setShowEditors] = useState(true)
   const presetIndex = store.presetIndex ?? 0
