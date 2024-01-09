@@ -1,5 +1,4 @@
-import { decodeLocationHash, decodeLocationState, deepClone } from '@/utils'
-import { useEffect } from 'react'
+import { decodeLocationState, deepClone, encodeLocationState } from '@/utils'
 import createPersistentStore from './createPersistentStore'
 import { gridPresets } from './presets'
 import { PlaygroundState, PlaygroundStore } from './types'
@@ -15,12 +14,14 @@ function getCurrentPreset(state: PlaygroundState): PlaygroundState {
 }
 
 const usePlaygroundStore = createPersistentStore<PlaygroundStore>((rawSet, get) => {
+  const locationState = decodeLocationState<PlaygroundState>()
   const defaultState: PlaygroundState = {
     ...{
       selectedGrid: -1,
       selectedGridItem: -1,
     },
     ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
+    ...locationState,
   }
 
   const updateState = (state: Partial<PlaygroundState>) => {
@@ -151,7 +152,6 @@ const usePlaygroundStore = createPersistentStore<PlaygroundStore>((rawSet, get) 
     selectGrid: (gridIndex) => updateState({ selectedGrid: gridIndex, selectedGridItem: -1 }),
     selectGridItem: (gridItemIndex) => updateState({ selectedGridItem: gridItemIndex }),
     setGridItemText(text, gridIndex, gridItemIndex) {
-      console.log('setGridItemText', text, gridIndex, gridItemIndex)
       const grids = [...get().grids]
       if (!grids[gridIndex]) {
         throw new Error(`Grid not found: #${gridIndex}`)
@@ -167,17 +167,9 @@ const usePlaygroundStore = createPersistentStore<PlaygroundStore>((rawSet, get) 
 
 export default usePlaygroundStore
 
-export function useUpdateStateOnHistoryChange() {
-  const store = usePlaygroundStore()
-  const { loadStateFromLocationHash } = store
-  const handleHistoryChange = () => {
-    loadStateFromLocationHash()
-  }
+export function usePlaygroundStateAsUrl() {
+  const store = usePlaygroundStore((state) => state)
+  const host = window.location.origin
 
-  useEffect(() => {
-    window.addEventListener('hashchange', handleHistoryChange)
-    return () => {
-      window.removeEventListener('hashchange', handleHistoryChange)
-    }
-  }, [])
+  return `${host}${import.meta.env.BASE_URL}#${encodeLocationState(store)}`
 }

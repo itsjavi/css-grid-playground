@@ -16,7 +16,8 @@ update the corresponding CSS giving you instant feedback.
 - SCSS Modules
 - OpenProps for CSS variables
 - Zustand for state management
-- URL hash to persist state
+- localStorage to persist state
+- URL hash to share state
 - Github Actions as CI/CD
 - Github Pages for deployments
 

@@ -61,10 +61,6 @@ export type PlaygroundState = {
    * The last time the state was modified
    */
   lastModified?: number
-  /**
-   * If true, the state will not be persisted in the URL
-   */
-  noPersist?: boolean | undefined
 }
 
 export type PlaygroundActions = {

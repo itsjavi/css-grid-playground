@@ -1,10 +1,4 @@
-import { decodeLocationHash, decodeLocationState, pushEncodedLocationHash } from '@/utils'
 import { StateStorage } from 'zustand/middleware'
-
-type DebouncedHashStorage = StateStorage & {
-  updateTimeout: NodeJS.Timeout | number | undefined
-  updateDelay: number
-}
 
 type DebouncedLocalStorage = StateStorage & {
   updateTimeout: NodeJS.Timeout | number | undefined
@@ -13,50 +7,57 @@ type DebouncedLocalStorage = StateStorage & {
 
 export const DEBOUNCE_DELAY = 1000
 
-const hashStorage: StateStorage = {
-  getItem: (): string => {
-    return decodeLocationHash() ?? ''
-  },
-  setItem: (_, newValue): void => {
-    const decodedValue = decodeLocationState()
-    if (decodedValue && decodedValue.noPersist === true) {
-      return
+export const localStorageWrapper = {
+  getItem: (name: string) => {
+    const str = localStorage.getItem(name)
+    if (!str) {
+      return null
     }
-    pushEncodedLocationHash(newValue)
-    //replaceEncodedLocationHash(newValue)
+    return str
   },
-  removeItem: (): void => {
-    location.hash = ''
+  setItem: (name: string, value: string) => {
+    localStorage.setItem(name, value)
   },
+  removeItem: (name: string) => localStorage.removeItem(name),
 }
 
-// Updates hash every DEBOUNCE_DELAY ms
-export const debouncedHashStorage: DebouncedHashStorage = {
-  updateTimeout: undefined,
-  updateDelay: DEBOUNCE_DELAY,
-  getItem: hashStorage.getItem,
-  removeItem: hashStorage.removeItem,
-  setItem: (name, newValue): void => {
-    if (debouncedHashStorage.updateTimeout) {
-      clearTimeout(debouncedHashStorage.updateTimeout)
-    }
-    debouncedHashStorage.updateTimeout = setTimeout(() => {
-      hashStorage.setItem(name, newValue)
-    }, debouncedHashStorage.updateDelay)
-  },
+const MAX_HISTORY_LENGTH = 25
+
+function updateLocalStorageStateHistory(name: string, oldValue: string): void {
+  const key = `${name}__history`
+  const prevHistory: string[] = JSON.parse(localStorageWrapper.getItem(key) ?? '[]')
+
+  prevHistory.push(JSON.parse(oldValue).state)
+  while (prevHistory.length > MAX_HISTORY_LENGTH) {
+    prevHistory.shift()
+  }
+
+  localStorageWrapper.setItem(key, JSON.stringify(prevHistory))
 }
 
-export const debouncedLocalStorage: DebouncedLocalStorage = {
+export function getLocalStorageStateHistory<T>(name: string): T[] {
+  return JSON.parse(localStorageWrapper.getItem(`${name}__history`) ?? '[]')
+}
+
+/**
+ * Updates localStorage with a delay and keeps a history of previous values,
+ * to be able use undo/redo functionality.
+ */
+export const debouncedLocalStorageWithHistory: DebouncedLocalStorage = {
   updateTimeout: undefined,
   updateDelay: DEBOUNCE_DELAY,
-  getItem: localStorage.getItem,
-  removeItem: localStorage.removeItem,
+  getItem: localStorageWrapper.getItem,
+  removeItem: localStorageWrapper.removeItem,
   setItem: (name, newValue): void => {
-    if (debouncedLocalStorage.updateTimeout) {
-      clearTimeout(debouncedLocalStorage.updateTimeout)
+    if (debouncedLocalStorageWithHistory.updateTimeout) {
+      clearTimeout(debouncedLocalStorageWithHistory.updateTimeout)
     }
-    debouncedLocalStorage.updateTimeout = setTimeout(() => {
-      localStorage.setItem(name, newValue)
-    }, debouncedLocalStorage.updateDelay)
+    debouncedLocalStorageWithHistory.updateTimeout = setTimeout(() => {
+      const oldValue = localStorageWrapper.getItem(name)
+      if (oldValue) {
+        updateLocalStorageStateHistory(name, oldValue)
+      }
+      localStorageWrapper.setItem(name, newValue)
+    }, debouncedLocalStorageWithHistory.updateDelay)
   },
 }

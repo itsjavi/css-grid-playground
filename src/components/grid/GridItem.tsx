@@ -1,7 +1,7 @@
 import usePlaygroundStore from '@/state/usePlaygroundStore'
 import { cn } from '@/utils'
 import { ComponentPropsWithoutRef } from 'react'
-import AsStyled from '../AsStyled'
+import AsStyled from '../primitives/AsStyled'
 import styles from './GridItem.module.scss'
 
 type GridItemProps = {

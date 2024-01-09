@@ -1,0 +1,12 @@
+.gridControllers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 850px) {
+  .gridControllers {
+    grid-template-columns: 1fr;
+  }
+}

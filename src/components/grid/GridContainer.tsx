@@ -2,7 +2,7 @@ import { GridItemVirtualDom } from '@/state/types'
 import usePlaygroundStore from '@/state/usePlaygroundStore'
 import { cn, safelyJoinCss } from '@/utils'
 import { ComponentPropsWithoutRef } from 'react'
-import AsStyled from '../AsStyled'
+import AsStyled from '../primitives/AsStyled'
 import styles from './GridContainer.module.scss'
 import GridItem from './GridItem'
 

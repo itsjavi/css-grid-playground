@@ -1,12 +1,9 @@
-import AppFooter from './components/AppFooter'
-import AppHeader from './components/AppHeader'
-import AppMainText from './components/AppMainText'
 import Playground from './components/Playground'
-import { useUpdateStateOnHistoryChange } from './state/usePlaygroundStore'
+import AppFooter from './components/layout/AppFooter'
+import AppHeader from './components/layout/AppHeader'
+import AppMainText from './components/layout/AppMainText'
 
 function App() {
-  useUpdateStateOnHistoryChange()
-
   return (
     <div id="app">
       <div>

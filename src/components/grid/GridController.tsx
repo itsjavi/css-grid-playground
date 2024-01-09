@@ -6,7 +6,7 @@ import removeIcon from '@/assets/trash-2.svg'
 import { PlaygroundState } from '@/state/types'
 import { cn, unindentLines } from '@/utils'
 import { ComponentPropsWithoutRef, useRef, useState } from 'react'
-import CodeEditorField from '../CodeEditorField'
+import CodeEditorField from '../primitives/CodeEditorField'
 import styles from './GridController.module.scss'
 
 type GridControllerContext = {

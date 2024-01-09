@@ -18,7 +18,7 @@ function createGrids(numGrids: number, numItems: number): PlaygroundState['grids
 
 export const gridPresets: GridPreset[] = [
   {
-    name: 'Default demo',
+    name: 'Basic',
     description: 'This is the default demo. It is a double grid with 6 items.',
     createState: () => ({
       selectedGrid: -1,
