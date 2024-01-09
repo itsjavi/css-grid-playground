@@ -50,15 +50,6 @@
     "sort-package-json": "^2.6.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
-    "vite-plugin-svgr": "^4.2.0",
     "zustand": "^4.4.7"
-  },
-  "dependencies-legacy": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "styled-components": "^2.0.0",
-    "react-scripts": "0.9.5",
-    "jest-styled-components": "^2.1.1",
-    "react-test-renderer": "^15.4.2"
   }
 }
