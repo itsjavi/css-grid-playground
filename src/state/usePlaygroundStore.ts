@@ -14,15 +14,17 @@ function getCurrentPreset(state: PlaygroundState): PlaygroundState {
 }
 
 const usePlaygroundStore = createPersistentStore<PlaygroundStore>((rawSet, get) => {
-  const locationState = decodeLocationState<PlaygroundState>()
-  const defaultState: PlaygroundState = {
-    ...{
-      selectedGrid: -1,
-      selectedGridItem: -1,
-    },
-    ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
-    ...locationState,
-  }
+  const locationState = decodeLocationState<PlaygroundState>() as PlaygroundState
+  const defaultState: PlaygroundState = locationState.grids
+    ? locationState
+    : {
+        ...{
+          selectedGrid: -1,
+          selectedGridItem: -1,
+        },
+        ...gridPresets[DEFAULT_PRESET_INDEX].createState(),
+        ...locationState,
+      }
 
   const updateState = (state: Partial<PlaygroundState>) => {
     rawSet({ lastModified: generateLastModified(), ...state })
@@ -30,19 +32,24 @@ const usePlaygroundStore = createPersistentStore<PlaygroundStore>((rawSet, get) 
 
   return {
     ...defaultState,
-    loadStateFromLocationHash: () => {
-      const locationState: Partial<PlaygroundState> = decodeLocationState<PlaygroundState>()
-      const currentState = get()
-
-      if (locationState.lastModified === currentState.lastModified) {
-        console.log('loadStateFromLocationHash skipped: timestamps are equal')
+    syncStateFromLocationHash: () => {
+      if (window.location.hash.length <= 1) {
         return
       }
 
-      rawSet({
-        ...currentState,
-        ...locationState,
-      })
+      const locationState: Partial<PlaygroundState> = decodeLocationState<PlaygroundState>()
+
+      if (!locationState.grids) {
+        console.log('Invalid hash state: No grids data found in location hash')
+        return
+      }
+
+      rawSet(locationState)
+
+      setTimeout(() => {
+        // Cleanup to avoid an infinite loop of updates
+        window.location.hash = ''
+      }, 250)
     },
     setTitle: (title) => updateState({ title }),
     selectPreset: (presetIndex) => {

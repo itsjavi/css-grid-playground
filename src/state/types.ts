@@ -80,7 +80,7 @@ export type PlaygroundActions = {
   removeGridItem: (gridIndex: number, gridItemIndex: number) => void
   // removeLastGridItem: (gridIndex: number) => void
   //
-  loadStateFromLocationHash: () => void
+  syncStateFromLocationHash: () => void
   //
   selectPreset: (presetIndex: number) => void
   //

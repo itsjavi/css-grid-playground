@@ -15,9 +15,9 @@ export function PresetSelector() {
         defaultValue={store.presetIndex}
         onChange={(e) => {
           currentRef.current = e.target.value
-          //if (!store.lastModified) {
-          store.selectPreset(Number(e.target.value))
-          // }
+          if (!store.lastModified) {
+            store.selectPreset(Number(e.target.value))
+          }
         }}
       >
         {gridPresets.map((preset, index) => {
