@@ -10,7 +10,6 @@ export function PresetSelector() {
 
   return (
     <div className={styles.selectWithButton}>
-      <span>Preset: </span>
       <select
         defaultValue={store.presetIndex}
         onChange={(e) => {
@@ -20,14 +19,16 @@ export function PresetSelector() {
           }
         }}
       >
-        {gridPresets.map((preset, index) => {
-          return (
-            <option key={`preset-${index}`} value={index}>
-              {/* {index === 0 ? '---' : preset.name} */}
-              {preset.name}
-            </option>
-          )
-        })}
+        <optgroup label="Example presets">
+          {gridPresets.map((preset, index) => {
+            return (
+              <option key={`preset-${index}`} value={index}>
+                {/* {index === 0 ? '---' : preset.name} */}
+                {preset.name}
+              </option>
+            )
+          })}
+        </optgroup>
       </select>
       {store.lastModified !== undefined && (
         <button

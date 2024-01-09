@@ -33,7 +33,7 @@ export function ShowShareableUrlrigger() {
       </dialog>
       <button type="button" title="Get Shareable URL" onClick={handleOpenDialog}>
         <img src={linkIcon} alt="Permalink" />
-        <span className="-sm-hidden">Share</span>
+        <span className="sm-hidden">Share</span>
       </button>
     </>
   )

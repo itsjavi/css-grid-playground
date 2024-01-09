@@ -40,8 +40,8 @@ export default function Playground({ className, ...props }: PlaygroundProps) {
             <AsStyled css={store.wrapperStyles}>{gridElements}</AsStyled>
           </div>
         </section>
-        {showEditors && <GridControllers />}
         <GeneralActionsToolbar editorsVisible={showEditors} setEditorsVisible={setShowEditors} />
+        {showEditors && <GridControllers />}
       </div>
     </div>
   )

@@ -1,3 +1,5 @@
+import hidePanelIcon from '@/assets/panel-top-close.svg'
+import showPanelIcon from '@/assets/panel-top-open.svg'
 import styles from './GeneralActionsToolbar.module.scss'
 import { PresetSelector } from './PresetSelector'
 import { ShowCodeTrigger } from './ShowCodeTrigger'
@@ -15,12 +17,14 @@ export function GeneralActionsToolbar({
           <>
             {editorsVisible && (
               <button title="Hide Editors" type="button" onClick={() => setEditorsVisible(false)}>
-                Hide Editors
+                <img src={hidePanelIcon} alt="Hide Editors" />
+                <span className="sm-hidden">Hide editors</span>
               </button>
             )}
             {!editorsVisible && (
               <button title="Show Editors" type="button" onClick={() => setEditorsVisible(true)}>
-                Show Editors
+                <img src={showPanelIcon} alt="Show Editors" />
+                <span className="sm-hidden">Show editors</span>
               </button>
             )}
           </>

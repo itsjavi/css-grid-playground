@@ -58,7 +58,7 @@ export function ShowCodeTrigger() {
       </dialog>
       <button type="button" title="Show code" onClick={handleOpenDialog}>
         <img src={codeIcon} alt="Code" />
-        <span className="-sm-hidden">Code</span>
+        <span className="sm-hidden">Code</span>
       </button>
     </>
   )
